@@ -1,0 +1,6 @@
+customer_id,name,email,amount,group,signup_date,active
+1, Alice ,alice@example.com,10,A,2024-01-01,yes
+2,Bob,,20,B,2024/02/01,true
+3,alice,wrong-email,12,A,March 3 2024,Y
+3,alice,wrong-email,12,A,March 3 2024,Y
+4,Dee,dee@example.com,999,B,not-a-date,no
