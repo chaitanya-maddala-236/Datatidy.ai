@@ -115,4 +115,6 @@ All dataset routes require the upload response's `X-Session-Token`. The API acce
 
 ## Free-first cloud deployment
 
-For a free-tier portfolio demo, use one Render Free Docker web service. Expect idle spin-down, a cold start, 512 MB RAM, 0.1 CPU, and session loss when the in-memory service restarts. Keep one instance and one worker. See [deploy/free-first.md](deploy/free-first.md) for setup and a cost-aware AWS alternative. To host the frontend on Vercel and the API on Render, follow [deploy/render-vercel.md](deploy/render-vercel.md). Render describes its free instances as suitable for testing and hobby projects, not production.
+The live demo uses [Vercel for the frontend](https://datatidy-ai.vercel.app) and [Render for the API](https://datatidy-api.onrender.com/api/health). The API health endpoint returns `{"status":"ok","service":"DataTidy AI"}`. See [deploy/render-vercel.md](deploy/render-vercel.md) for deployed settings and setup steps. The alternative single-container Render deployment is documented in [deploy/free-first.md](deploy/free-first.md).
+
+The Render API runs on the Free plan, which can sleep when idle. Uploaded datasets are kept in process memory, so a service restart or sleep can end the temporary session and require a re-upload. This is a demo deployment, not production hosting.
