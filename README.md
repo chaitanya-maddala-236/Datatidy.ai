@@ -13,16 +13,29 @@ DataTidy AI is a CSV analysis and cleaning workspace. Upload a dataset to inspec
 - **Optional Groq and RAG:** Groq can interpret questions and explain results. Optional local BM25 retrieval finds relevant row snippets for grounded answers.
 - **Exports:** download the cleaned CSV and a data quality report.
 
-## How it works
+## Technologies
 
-Python and pandas compute profiles, charts, and analytical results. The assistant can propose or interpret an action, but the backend validates the request against supported operations. Changes are applied only after explicit user approval, to a working copy. The original upload remains unchanged, and the app does not execute CSV contents or arbitrary generated code.
+| Area | Technology | Role in the application |
+| --- | --- | --- |
+| User interface | React and TypeScript | Build the upload flow, data workspace, chat, review screens, and typed API interactions. |
+| Frontend tooling | Vite | Run the local development server, proxy API requests during development, and bundle the production UI. |
+| Charts and icons | Recharts and Lucide React | Render EDA visualizations and interface icons. |
+| API | Python and FastAPI | Handle CSV uploads, session-scoped API requests, validation, and serving the application API. |
+| Data processing | pandas | Compute profiles, EDA values, supported chat analyses, and approved cleaning operations deterministically. |
+| AI assistance | Groq API (optional) | Classify supported chat questions and suggest cleaning plans when the user connects a key. |
+| Retrieval | Custom, in-memory BM25 | Find relevant rows from local, session-scoped row blocks for optional grounded chat. No vector database or embedding service is required. |
 
-## Tech stack
+## Application workflow
 
-- **Frontend:** React, TypeScript, Vite, Recharts
-- **Backend:** Python, FastAPI, pandas
-- **AI:** Groq API (optional); deterministic rules-based fallbacks
-- **Retrieval:** session-scoped BM25 over local row blocks
+1. **Connect Groq (optional).** The user may enter and verify a Groq API key. Profiling, charts, and supported data analysis still work without one.
+2. **Upload a CSV.** The API validates the file and creates a temporary dataset session. The dataset is held in server memory for that session.
+3. **Profile and explore.** pandas computes data quality signals and EDA values. The React interface presents the profile, searchable preview, and Recharts visualizations.
+4. **Ask questions.** With Groq connected, the model maps a question to a supported analysis. Without a key, a rules-based parser handles supported question patterns. pandas computes the answer in either case.
+5. **Optionally retrieve evidence.** If the user enables RAG, the backend searches row blocks locally with BM25. It can send up to five matching snippets and the computed result to Groq to explain the answer. The full CSV is not sent to Groq.
+6. **Review a cleaning plan.** Groq or the rules fallback proposes supported operations. The API validates the proposed actions and creates a before-and-after preview; it does not apply the changes yet.
+7. **Approve and export.** The user chooses which actions to continue with and explicitly approves them. pandas applies approved actions to a separate working copy, leaving the original dataset unchanged. The user can download the cleaned CSV and quality report.
+
+The AI proposes or interprets actions; deterministic Python code performs the calculations and cleaning. The application does not execute CSV contents or arbitrary generated code.
 
 ## Run locally
 
